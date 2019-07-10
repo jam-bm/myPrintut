@@ -1,48 +1,82 @@
 <template>
-    <!-- <div style="position: relative; width: inherit; height: inherit"> -->
-        <vue-draggable-resizable :w="100" :h="100" @dragging ="onDrag" @resizing="onResize" :parent="true" :grid="[1,1]">
-            <!-- <div class="constr__cnt">
-                <div class="draggable"></div>
-                <div class='resizers'>
-                <div class='resizer resizer-left'></div>
-                <div class='resizer resizer-right'></div>
-                </div>
-                <div contenteditable="true" class="constructor-input-text">Текст</div>
-            </div> -->
-            <p>Hello! I'm a flexible component. You can drag me around and you can resize me.</p><br>
-        </vue-draggable-resizable>
-        <!-- <div style="height: 500px; width: 500px; border: 1px solid red; position: relative;">
-            
-        </div> -->
-    <!-- </div> -->
+  <!-- <vue-draggable-resizable :handles="['tm','bm','ml','mr']" :w="100" :h="100" @dragging="onDrag" @resizing="onResize" :parent="true" :grid="[10, 10]">
+    123
+  </vue-draggable-resizable>    -->
+  
+<div>
+
+    <drr
+      :x="x"
+      :y="y"
+      :w="width"
+      :h="height"
+      :rotateable="true"
+      :hasActiveContent="true"
+      @rotate="printRect"
+      @rotatestop="rotateStop"
+  > 
+  
+  <div class="tooltip" >
+     <span class="drr-rotate-degree-info tooltiptext" ref="ddrInfo"></span>
+  </div>
+
+            Test
+  </drr>
+     
+</div>
+
+
 </template>
 
 <script>
+import Rotate from 'vue-rotate'
 export default {
     data(){
         return {
-            width: 0,
-            height: 0,
-            x:0,
-            y:0
+            width: 100,
+            height: 100,
+            x: 0,
+            y: 0,
         }
     },
 
     methods: {
-        onResize(x,y,width,height){
-            this.x = x;
-            this.y= y;
-            this.width = width
-            this.height = height
-        },
-        onDrag(x, y){
-            this.x = x;
-            this.y = y
-        }
-    },
+      printRect(rect){
+        console.log(rect)
+        let r = rect.angle
+        this.$refs.ddrInfo.innerHTML = r < 0 ? Math.floor(360 + r) : Math.round(rect.angle)
+      },
+      rotateStop(){
+        setTimeout(() => {
+          // this.$refs.ddrInfo.innerHTML = ''
+        }, 1000)
+      }
+    }
 }
 </script>
 
 <style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
 
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
 </style>
