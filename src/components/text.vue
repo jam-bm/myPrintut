@@ -7,10 +7,12 @@
 export default {
     methods: {
         addForm(){
-            this.$emit('addText')
+            this.$emit('addText','lala', 'text')
         }
     },
 
 }
 </script>
 
+<style>
+</style>

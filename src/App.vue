@@ -57,7 +57,11 @@
                     <div class="square__border"></div>
 
                     <div id="capture" class="constructor__inner__border__cnt">
-                        <textInput v-for="(value, key) in inputsArr" :key="key"/>
+                        <!-- <textInput v-for="(value1, ke) in inputsArr.text" ></textInput>
+                        <imgInput v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></imgInput> -->
+                        <dr v-for="(value1, ke) in inputsArr.text" >text</dr>
+                        <dr v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></dr>
+                        
                         <div class="center_square"></div>
                     </div>
                 </div>
@@ -87,7 +91,7 @@
         <div class="static-aside-block">
             <ul>
                 <li v-for="(value, key) in asideTabs " :key="key"  >
-                    <button :class="['tab-btn',`${value.btnClass}`]" @click="openAsideTop(value.name)" >
+                    <button :class="['tab-btn',`${value.btnClass}`]" @click="openAsideTop(value.name, value.text)" >
                         <i :class="[`fas ${value.icon} `]"></i>
                         <br>
                         <span class="nav-text">
@@ -100,7 +104,7 @@
 
             <ul class="bottom">
                 <li v-for="(value, key) in bottomTabs" :key="key">
-                    <button :class="['tab-btn', `${value.btnClass}`]" @click="openAsideTop(value.name)">
+                    <button :class="['tab-btn', `${value.btnClass}`]" @click="openAsideTop(value.name, value.text)">
                         <i :class="[`fas ${value.icon}`]"></i>
                         <br>
                         <span class="nav-text">
@@ -125,23 +129,29 @@ import QrCodeTab from './components/qrCode'
 import filesTab from './components/files'
 import basicsTab from './components/basics'
 import templatesTab from './components/templates'
-import textInput from './components/text-input'
 export default {
   name: 'app',
   data(){
       return {
         isActive: false,
         selectedComponent: '',
-        inputsArr: [],
+        componentInput: '',
+        inputsArr: {
+            text: [],
+            img: [],
+            
+        },
+        img: [],
+        type:'',
         asideTabs: [
             {
                 name: 'search-tab', btnClass: 'search-btn', text: 'Search', icon: 'fa-search fa-2x'
             },
             {
-                name: 'text-tab', btnClass: 'text-btn', text: 'Text', icon: 'fa-text-height fa-2x'
+                name: 'text-tab', btnClass: 'text-btn', text: 'textInput', icon: 'fa-text-height fa-2x'
             },
             {
-                name: 'images-tab', btnClass: 'images-btn', text: 'Images', icon: 'fa-images fa-2x'
+                name: 'images-tab', btnClass: 'images-btn', text: 'imgInput', icon: 'fa-images fa-2x'
             },
             {
                 name: 'elements-tab', btnClass: 'elements-btn', text: 'elements', icon: 'fa-shapes fa-2x'
@@ -178,7 +188,6 @@ components: {
         filesTab,
         basicsTab,
         templatesTab,
-        textInput
     },
 
 
@@ -187,13 +196,15 @@ components: {
           this.isActive = !this.isActive;
       },
 
-      openAsideTop(name){
+      openAsideTop(name, text){
         this.isActive = true;
         this.selectedComponent = name;
+        this.componentInput = text;
       },
 
-      pushElement(){
-          this.inputsArr.push(1)
+      pushElement(value, type){
+          console.log(value , type)
+            this.inputsArr[type].push(value)
       }
 
 

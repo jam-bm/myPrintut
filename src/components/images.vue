@@ -1,15 +1,36 @@
 <template>
     <div>
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptas veritatis architecto culpa esse earum nesciunt, eligendi quis et, molestiae aperiam doloribus cumque iure adipisci excepturi, corrupti ab quod voluptate. Sequi!
+        <div v-for="n in images" :key="n">
+            <button @click="addForm(n)">
+                <img :src="n" alt="">
+            </button>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-
+    data() {
+        return {
+            images: [
+                require('@/assets/img/download.jpg'),
+                require('@/assets/img/images.jpg'),
+                require('@/assets/img/download (1).jpg')
+            ]
+        }
+    },
+    methods: {
+        addForm(img){
+            this.$emit('addText', img, 'img')
+        }
+    }
 }
 </script>
 
 <style>
-
+    img{
+        padding: 2px;
+        width: 100%;
+        z-index: 10000;
+    }
 </style>
