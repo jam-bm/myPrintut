@@ -53,14 +53,21 @@
                         <div class="back__line"></div>
                     </div>
 
+                    <div id="lines">
+                        <span class="vert"></span>
+                        <span class="hori"></span>
+                    </div>
+
 
                     <div class="square__border"></div>
 
-                    <div id="capture" class="constructor__inner__border__cnt">
+                    <div id="paper" class="constructor__inner__border__cnt">
                         <!-- <textInput v-for="(value1, ke) in inputsArr.text" ></textInput>
                         <imgInput v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></imgInput> -->
-                        <dr v-for="(value1, ke) in inputsArr.text" >text</dr>
-                        <dr v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></dr>
+                        <div id="container">
+                            <dr v-for="(value1, ke) in inputsArr.text" :key="ke" @coordinate="coorStickText" :xNum="xNum" :yNum="yNum" :kal="ke">text</dr>
+                            <dr v-for="(value2, k) in inputsArr.img" :key="k" :imgSrc="value2" @coordinate="coorStickImg" :xNum="xNum" :yNum="yNum" :kal="k"></dr>
+                        </div>
                         
                         <div class="center_square"></div>
                     </div>
@@ -139,8 +146,11 @@ export default {
         inputsArr: {
             text: [],
             img: [],
-            
         },
+        coorText: [],
+        coorImg: [],
+        xNum: 500,
+        yNum: 300,
         img: [],
         type:'',
         asideTabs: [
@@ -204,9 +214,60 @@ components: {
 
       pushElement(value, type){
           console.log(value , type)
-            this.inputsArr[type].push(value)
-      }
+          this.inputsArr[type].push(value)
+      },
+      coorStickText(x,y,k){
+        //   if(!k){
+        //       this.coorText.push({
+        //             x: x,
+        //             y: y
+        //         })
+        //   }
+        //     else{
+        //         console.log('lala')
+        //         this.coorText.push({
+        //             x: x,
+        //             y: y
+        //         })
+        //         console.log('lala2')
 
+        //         for(let xnew in this.coorText) {
+        //         console.log(xnew.x, xnew.y)
+
+        //             console.log(xnew.x, xnew.y)
+        //             if(xnew==k){
+        //                 continue
+        //             }
+        //             console.log(xnew.x, xnew.y)
+        //             if(Math.abs(xnew.x-x)<this.xNum) {
+        //                 this.xNum = xnew.x
+        //                 console.log(xnew.x, x)
+        //             }
+        //             if(Math.abs(xnew.y-y)<this.yNum) {
+        //                 this.yNum = xnew.y
+        //                 console.log(xnew.y, y)
+        //             }
+        //         }
+        //     }
+        console.log(x,y,k)
+        this.coorText[k]={x,y}
+        for(let xnew in this.coorText) {
+            console.log(xnew)
+            if(xnew==k){
+                continue
+            }
+            console.log('after')
+            console.log(Math.abs(this.coorText[xnew].x-x))
+            if(Math.abs(this.coorText[xnew].x-x)<this.xNum) {
+                this.xNum = Math.abs(this.coorText[xnew].x-x)
+            }
+            if(Math.abs(this.coorText[xnew].y-y)<this.yNum) {
+                this.yNum = Math.abs(this.coorText[xnew].y-y)
+            }
+        }
+        this.coorText[k]={x:this.xNum+x,y:this.yNum+y}
+
+      }
 
   },
 
