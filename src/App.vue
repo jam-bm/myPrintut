@@ -90,7 +90,7 @@
     <div class="side-ctn">
         <div :class="['aside-block', {active: isActive}]"  >
             <div class="aside-active-tab-cnt">
-                <component :is="selectedComponent" @addText="pushElement"></component>
+                <component :is="selectedComponent" @addText="pushElement" :lalala="output"></component>
             </div>
           
 
@@ -144,6 +144,23 @@ import basicsTab from './components/basics'
 import templatesTab from './components/templates'
 export default {
   name: 'app',
+  watch: {
+      baza() {
+          localStorage.setItem('template', JSON.stringify(this.baza))
+      },
+
+      inputsArr() {
+          localStorage.setItem('template', JSON.stringify(this.inputsArr))
+      },
+
+      coorText() {
+          localStorage.setItem('template', JSON.stringify(this.coorText))
+      },
+
+      coorImg() {
+          localStorage.setItem('template', JSON.stringify(this.coorImg))
+      }
+  },
   mounted() {
       if (this.activeElemType) {
           console.log(this.activeElemType)
@@ -191,6 +208,26 @@ export default {
           
       }
       
+      let lastTemplate = localStorage.getItem('template')
+      let inputsArr = localStorage.getItem('inputsArr')
+      let coorText = localStorage.getItem('coorText')
+      let coorImg = localStorage.getItem('coorImg')
+
+      if(lastTemplate){
+          this.baza = JSON.parse(lastTemplate)
+      }
+
+      if(inputsArr){
+          this.inputsArr = JSON.parse(inputsArr)
+      }
+
+      if(coorText){
+          this.coorText = JSON.parse(coorText)
+      }
+
+      if(coorImg){
+          this.coorImg = JSON.parse(coorImg)
+      }
   },
   data(){
       return {
@@ -245,7 +282,26 @@ export default {
             {
                 name: 'templates-tab', btnClass: 'Templates-btn', text: 'Templates', icon: 'fa-pen-square fa-2x'
             },
-        ]
+        ],
+
+        baza: {
+            default: {
+                text: [
+                    {src: '123', x: 0, y: 0, angle: 0, w: 0, h: 0}
+                ],  
+                img: [
+                    {src: '@/assets/dsd.jpg', x: 1, y: 24, angle: 0, w: 0, h: 0}
+                ]
+            },
+            'qoraLayout': {
+                text: [
+                    {}
+                ],
+                img: [
+                    {}
+                ]
+            }
+        }
       }
   },
     
@@ -262,7 +318,7 @@ components: {
     },
 
 
-  methods: {
+methods: {
     activeEl(type, key) {
         for (let xtype in this.isActiveEl) {
             this.isActiveEl[xtype] = false
@@ -272,11 +328,50 @@ components: {
         this.activeElemArrIndex = key
         console.log(type)
     },
+
     async print() {
+
+        for (let item=0; item < this.inputsArr.text.length; item++) {
+            if(!this.baza.template) {
+                this.$set(this.baza, 'template', {})
+            }
+
+            if(!this.baza.template.text) {
+                this.$set(this.baza.template, 'text', [])
+            }
+
+            this.baza.template.text.push({
+                src: this.inputsArr.text[item],
+                x: this.coorText[item].x,
+                y: this.coorText[item].y,
+                w: this.coorText[item].w,
+                h: this.coorText[item].h,
+                angle: this.coorText[item].angle
+            })
+            console.log("text "+item)
+        }
+        for (let item=0; item < this.inputsArr.img.length; item++) {
+            if(!this.baza.template) {
+                this.$set(this.baza, 'template', {})
+            }
+
+            if(!this.baza.template.img) {
+                this.$set(this.baza.template, 'img', [])
+            }
+
+            this.baza.template.img.push({
+                src: this.inputsArr.img[item],
+                x: this.coorImg[item].x,
+                y: this.coorImg[item].y,
+                w: this.coorImg[item].w,
+                h: this.coorImg[item].h,
+                angle: this.coorImg[item].angle
+            })
+            console.log("img "+item)
+        }
+        
+
         const el = this.$refs.printMe
-        // add option type to get the image version
-        // if not provided the promise will return 
-        // the canvas.
         const options = {
             type: 'dataURL'
         }
@@ -288,9 +383,7 @@ components: {
         document.body.appendChild(link)
         link.click()
     },
-    downloadImg(){
-        this.print()
-    },
+
     toggleAside(){
         this.isActive = !this.isActive;
     },
@@ -304,65 +397,13 @@ components: {
     pushElement(value, type){
         this.inputsArr[type].push(value)
     },
-    coorStickText(x,y,k,w,h){
-        //   if(!k){
-        //       this.coorText.push({
-        //             x: x,
-        //             y: y
-        //         })
-        //   }
-        //     else{
-        //         console.log('lala')
-        //         this.coorText.push({
-        //             x: x,
-        //             y: y
-        //         })
-        //         console.log('lala2')
 
-        //         for(let xnew in this.coorText) {
-        //         console.log(xnew.x, xnew.y)
-
-        //             console.log(xnew.x, xnew.y)
-        //             if(xnew==k){
-        //                 continue
-        //             }
-        //             console.log(xnew.x, xnew.y)
-        //             if(Math.abs(xnew.x-x)<this.xNum) {
-        //                 this.xNum = xnew.x
-        //                 console.log(xnew.x, x)
-        //             }
-        //             if(Math.abs(xnew.y-y)<this.yNum) {
-        //                 this.yNum = xnew.y
-        //                 console.log(xnew.y, y)
-        //             }
-        //         }
-        //     }
-
-
-        
-        // console.log(x,y,k)
-        // for(let xnew in this.coorText) {
-        //     console.log(xnew)
-        //     if(xnew==k){
-        //         continue
-        //     }
-        //     console.log('after')
-        //     console.log(Math.abs(this.coorText[xnew].x-x))
-        //     if(Math.abs(this.coorText[xnew].x-x)<10) {
-        //         this.coorText[k]={x:xnew.x,y:xnew.y}
-        //         this.xNum = xnew.x
-        //     }
-        //     if(Math.abs(this.coorText[xnew].y-y)<10) {
-        //         this.coorText[k]={x:xnew.x,y:xnew.y}
-        //         this.yNum = xnew.y
-        //     }
-        // }
-
-        this.coorText[k]={x:x,y:y,w:w,h:h}
-        
+    coorStickText(x,y,k,w,h,angle){
+        this.coorText[k]={x:x,y:y,w:w,h:h,angle:angle}
     },
-    coorStickImg(x,y,k,w,h){
-        this.coorImg[k]={x:x,y:y,w:w,h:h}
+
+    coorStickImg(x,y,k,w,h,angle){
+        this.coorImg[k]={x:x,y:y,w:w,h:h,angle:angle}
     }
 },
 

@@ -1,15 +1,31 @@
 <template>
     <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium illum voluptate eius mollitia inventore ex aspernatur distinctio cumque provident delectus. Culpa, cupiditate tempore. Corporis expedita, eaque consequatur dolores voluptas ex?
+        <button>
+            <img :src="lalala" alt="">
+        </button>
     </div>
 </template>
 
 <script>
 export default {
-
+    props: ['lalala'],
+    
 }
 </script>
 
 <style>
-
+    img{
+        padding: 2px;
+        width: 100%;
+        z-index: 10000;
+        
+        height: auto
+    }
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin: auto;
+        display: block;
+    }
 </style>
