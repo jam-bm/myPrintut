@@ -32,5 +32,14 @@ export default {
         padding: 2px;
         width: 100%;
         z-index: 10000;
+        
+        height: auto
+    }
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin: auto;
+        display: block;
     }
 </style>

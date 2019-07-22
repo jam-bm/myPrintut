@@ -6,6 +6,10 @@ import drr from '@minogin/vue-drag-resize-rotate'
 import dr from '@/components/drr'
 
 
+import VueHtml2Canvas from 'vue-html2canvas';
+
+Vue.use(VueHtml2Canvas);
+
 
 // optionally import default styles
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'

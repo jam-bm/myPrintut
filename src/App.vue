@@ -44,7 +44,7 @@
                 <div class="constructor_page_top">
                     <a href="#" class="line_safety">линия безопасности</a>
                 </div>
-                <div class="constuctor_page__square">
+                <div class="constuctor_page__square" >
                     <!-- square lines -->
                     <div class="square__back__lines__cnt">
                         <div class="back__line"></div>
@@ -53,33 +53,39 @@
                         <div class="back__line"></div>
                     </div>
 
-                    <div id="lines">
-                        <span class="vert"></span>
-                        <span class="hori"></span>
-                    </div>
-
 
                     <div class="square__border"></div>
 
-                    <div id="paper" class="constructor__inner__border__cnt">
+                    <div id="paper" class="constructor__inner__border__cnt" >
                         <!-- <textInput v-for="(value1, ke) in inputsArr.text" ></textInput>
                         <imgInput v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></imgInput> -->
-                        <div id="container">
-                            <dr v-for="(value1, ke) in inputsArr.text" :key="ke" @coordinate="coorStickText" :xNum="xNum" :yNum="yNum" :kal="ke">text</dr>
-                            <dr v-for="(value2, k) in inputsArr.img" :key="k" :imgSrc="value2" @coordinate="coorStickImg" :xNum="xNum" :yNum="yNum" :kal="k"></dr>
+                        
+                        <div class="printingBody" ref="printMe">
+                            <div key="text-drr">
+                                <dr v-for="(value2, k) in inputsArr.img" :key="k" 
+                                 
+                                 :imgSrc="value2" 
+                                @coordinate="coorStickImg" :coImg="coorImg" :coText="coorText" :kal="k" ></dr>
+                            </div>                            
+                            <div key="image-drr">
+                                <dr v-for="(value1, ke) in inputsArr.text" :key="ke" 
+                                
+                                @coordinate="coorStickText" :coText="coorText" :coImg="coorImg"  :kal="ke">text</dr>
+                            </div>
+                            
                         </div>
                         
-                        <div class="center_square"></div>
                     </div>
                 </div>
 
                 <div class="constructor_continue">
-                    <div class="continue_button" onClick="exportToPng()">Продолжить</div>
+                    <div class="continue_button" >
+                        <a type="button" @click="print">Продолжить</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 
     <div class="side-ctn">
         <div :class="['aside-block', {active: isActive}]"  >
@@ -138,14 +144,62 @@ import basicsTab from './components/basics'
 import templatesTab from './components/templates'
 export default {
   name: 'app',
+  mounted() {
+      if (this.activeElemType) {
+          console.log(this.activeElemType)
+        if(this.activeElemType=='img') {
+            window.addEventListener('keydown', (e) => {
+                console.log(e.key)
+                if (e.key == 'ArrowUp') {
+                    this.coorImg[this.activeElemArrIndex].y -= 1
+                    e.preventDefault()
+                }
+                else if (e.key == 'ArrowDown'){
+                    this.coorImg[this.activeElemArrIndex].y += 1
+                    e.preventDefault()
+                }
+                else if (e.key == 'ArrowRight'){
+                    this.coorImg[this.activeElemArrIndex].x += 1
+                    e.preventDefault()
+                }
+                else if (e.key == 'ArrowLeft') {
+                    this.coorImg[this.activeElemArrIndex].x -= 1
+                    e.preventDefault()
+                }
+            });
+        } else {
+            window.addEventListener('keydown', (e) => {
+                console.log(e.key)
+                if (e.key == 'ArrowUp') {
+                    this.coorText[this.activeElemArrIndex].y -= 1
+                    e.preventDefault()
+                }
+                else if (e.key == 'ArrowDown'){
+                    this.coorText[this.activeElemArrIndex].y += 1
+                    e.preventDefault()
+                }
+                else if (e.key == 'ArrowRight'){
+                    this.coorText[this.activeElemArrIndex].x += 1
+                    e.preventDefault()
+                }
+                else if (e.key == 'ArrowLeft') {
+                    this.coorText[this.activeElemArrIndex].x -= 1
+                    e.preventDefault()
+                }
+            });
+        }
+          
+      }
+      
+  },
   data(){
       return {
         isActive: false,
         selectedComponent: '',
         componentInput: '',
         inputsArr: {
-            text: [],
             img: [],
+            text: [],
         },
         coorText: [],
         coorImg: [],
@@ -153,6 +207,13 @@ export default {
         yNum: 300,
         img: [],
         type:'',
+        output: null,
+        isActiveEl: {
+            img: false,
+            text: false
+        },
+        activeElemType: '',
+        activeElemArrIndex: 0,
         asideTabs: [
             {
                 name: 'search-tab', btnClass: 'search-btn', text: 'Search', icon: 'fa-search fa-2x'
@@ -202,21 +263,48 @@ components: {
 
 
   methods: {
-      toggleAside(){
-          this.isActive = !this.isActive;
-      },
-
-      openAsideTop(name, text){
+    activeEl(type, key) {
+        for (let xtype in this.isActiveEl) {
+            this.isActiveEl[xtype] = false
+        }
+        this.isActiveEl[type] = true
+        this.activeElemType = type
+        this.activeElemArrIndex = key
+        console.log(type)
+    },
+    async print() {
+        const el = this.$refs.printMe
+        // add option type to get the image version
+        // if not provided the promise will return 
+        // the canvas.
+        const options = {
+            type: 'dataURL'
+        }
+        let outputlocal = await this.$html2canvas(el, options)
+        this.output = outputlocal
+        let link = document.createElement('a')
+        link.href = outputlocal
+        link.download= "filename.jpg"
+        document.body.appendChild(link)
+        link.click()
+    },
+    downloadImg(){
+        this.print()
+    },
+    toggleAside(){
+        this.isActive = !this.isActive;
+    },
+    
+    openAsideTop(name, text){
         this.isActive = true;
         this.selectedComponent = name;
         this.componentInput = text;
-      },
+    },
 
-      pushElement(value, type){
-          console.log(value , type)
-          this.inputsArr[type].push(value)
-      },
-      coorStickText(x,y,k){
+    pushElement(value, type){
+        this.inputsArr[type].push(value)
+    },
+    coorStickText(x,y,k,w,h){
         //   if(!k){
         //       this.coorText.push({
         //             x: x,
@@ -249,32 +337,54 @@ components: {
         //             }
         //         }
         //     }
-        console.log(x,y,k)
-        this.coorText[k]={x,y}
-        for(let xnew in this.coorText) {
-            console.log(xnew)
-            if(xnew==k){
-                continue
-            }
-            console.log('after')
-            console.log(Math.abs(this.coorText[xnew].x-x))
-            if(Math.abs(this.coorText[xnew].x-x)<this.xNum) {
-                this.xNum = Math.abs(this.coorText[xnew].x-x)
-            }
-            if(Math.abs(this.coorText[xnew].y-y)<this.yNum) {
-                this.yNum = Math.abs(this.coorText[xnew].y-y)
-            }
-        }
-        this.coorText[k]={x:this.xNum+x,y:this.yNum+y}
 
-      }
 
-  },
+        
+        // console.log(x,y,k)
+        // for(let xnew in this.coorText) {
+        //     console.log(xnew)
+        //     if(xnew==k){
+        //         continue
+        //     }
+        //     console.log('after')
+        //     console.log(Math.abs(this.coorText[xnew].x-x))
+        //     if(Math.abs(this.coorText[xnew].x-x)<10) {
+        //         this.coorText[k]={x:xnew.x,y:xnew.y}
+        //         this.xNum = xnew.x
+        //     }
+        //     if(Math.abs(this.coorText[xnew].y-y)<10) {
+        //         this.coorText[k]={x:xnew.x,y:xnew.y}
+        //         this.yNum = xnew.y
+        //     }
+        // }
 
+        this.coorText[k]={x:x,y:y,w:w,h:h}
+        
+    },
+    coorStickImg(x,y,k,w,h){
+        this.coorImg[k]={x:x,y:y,w:w,h:h}
+    }
+},
 
 }
 </script>
 
 <style>
-
+*{
+    user-select: none;
+}
+.hori{
+    border-top: 2px dashed;
+    width: 100%;
+    position: absolute;
+}
+.printingBody {
+    width: 784px;
+    height: 484px;
+    margin-left: 8px;
+    margin-top: 8px;
+}
+.continue_button{
+    cursor: pointer;
+}
 </style>

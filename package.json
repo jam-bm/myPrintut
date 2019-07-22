@@ -11,6 +11,7 @@
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-draggable-resizable": "^2.0.0-rc2",
+    "vue-html2canvas": "0.0.4",
     "vue-rotate": "0.0.9"
   },
   "devDependencies": {
