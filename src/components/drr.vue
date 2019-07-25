@@ -176,7 +176,7 @@ export default {
         this.lineActiveLeft =false
         this.mouseUP = true
         // console.log('ddrContRef', this.$refs.ddrContRef.children[0].classList.remove('active'))
-      }, 1200)
+      }, 500)
       
     },
 
@@ -188,15 +188,15 @@ export default {
       this.pt = 0
       this.pr = 0
       this.pb = 0
-      this.lineActiveTop = false
-      this.lineActiveBottom =false
-      this.lineActiveRight =false
-      this.lineActiveLeft =false
+      this.lineActiveTop    = false
+      this.lineActiveBottom = false
+      this.lineActiveRight  = false
+      this.lineActiveLeft   = false
       
 
-      this.width = rect.w
+      this.width  = rect.w
       this.height = rect.h
-      this.angle = rect.angle
+      this.angle  = rect.angle
       
       
       // Add coText elements to allArrays 
@@ -234,19 +234,12 @@ export default {
         if(Math.abs(this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x+(rect.w)/2)<10) {
             // padding kengligini obektlar orasidagi masofaga qarab beriw
             this.pl = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x+(rect.w)/2
-            rect.x=this.allArrays[xnew].x+(this.allArrays[xnew].w)/2+(rect.w)/2
+            rect.x  = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2+(rect.w)/2
             // Borderni korsatiw
-            this.lineActiveLeft= true
+            this.lineActiveLeft = true
             // Borderga position beriw
             this.linePosLeft = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2
-            // For loopdan cqb ketiw                   
-            break
-        }
-        else{
-          // padding 0 ga tenglawtiriw
-          this.pl = 0
-          // borderni korsatmaslik
-          this.lineActiveLeft = false
+            // For loopdan cqb ketiw
         }
         // Middle of the element - Left side of the drag
         if(Math.abs(rect.x-(rect.w)/2-this.allArrays[xnew].x)<10 && this.pl == 0) {
@@ -254,11 +247,6 @@ export default {
             rect.x=this.allArrays[xnew].x+(rect.w)/2
             this.lineActiveLeft= true
             this.linePosLeft = this.allArrays[xnew].x
-            break
-        }
-        else{
-          this.pl = 0
-          this.lineActiveLeft= false
         }
         // Left of the element - Left side of the drag
         if(Math.abs(rect.x-(rect.w)/2-this.allArrays[xnew].x+(this.allArrays[xnew].w)/2)<5 && this.pl == 0) {
@@ -266,11 +254,6 @@ export default {
             rect.x = this.allArrays[xnew].x+(rect.w)/2-(this.allArrays[xnew].w)/2
             this.lineActiveLeft= true
             this.linePosLeft = this.allArrays[xnew].x-(this.allArrays[xnew].w)/2
-            break
-        }
-        else{
-          this.pl = 0
-          this.lineActiveLeft= false
         }
         // Center of the element - Center of the Drag from Right Left
         if(Math.abs(rect.x-this.allArrays[xnew].x)<5 && this.pl == 0) {
@@ -278,11 +261,6 @@ export default {
             rect.x=this.allArrays[xnew].x
             this.lineActiveLeft= true
             this.linePosLeft = this.allArrays[xnew].x
-            break
-        }
-        else{
-          this.pl = 0
-          this.lineActiveLeft= false
         }
         // Left side of the element - Right side of the drag
         if(Math.abs(this.allArrays[xnew].x-(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2)<10) {
@@ -290,11 +268,6 @@ export default {
             rect.x = this.allArrays[xnew].x-(this.allArrays[xnew].w)/2-(rect.w)/2
             this.lineActiveRight = true
             this.linePosRight = this.allArrays[xnew].x-(this.allArrays[xnew].w)/2
-            break
-        }
-        else{
-          this.pr = 0
-          this.lineActiveRight = false
         }
         // Middle of the element - Right side of the drag            
         if(Math.abs(this.allArrays[xnew].x-rect.x-(rect.w)/2)<10) {
@@ -302,11 +275,6 @@ export default {
             rect.x = this.allArrays[xnew].x-(rect.w)/2
             this.lineActiveRight = true
             this.linePosRight = this.allArrays[xnew].x
-            break
-        }
-        else{
-          this.pr = 0
-          this.lineActiveRight = false
         }
         // Right of the element - Right side of the drag            
         if(Math.abs(this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2)<10) {
@@ -314,11 +282,6 @@ export default {
             rect.x = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-(rect.w)/2
             this.lineActiveRight = true
             this.linePosRight = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2
-            break
-        }
-        else{
-          this.pr = 0
-          this.lineActiveRight = false
         }
         // Bottom of the element - Top of the drag
         if(Math.abs((this.allArrays[xnew].h)/2+this.allArrays[xnew].y-rect.y+(rect.h)/2)<10) {
@@ -326,11 +289,6 @@ export default {
             rect.y = (this.allArrays[xnew].h)/2+this.allArrays[xnew].y+(rect.h)/2
             this.lineActiveTop = true
             this.linePosTop = (this.allArrays[xnew].h)/2+this.allArrays[xnew].y
-            break
-        }
-        else{
-          this.pt = 0
-          this.lineActiveTop = false
         }
         // Middle the element - Top of the drag
         if(Math.abs(this.allArrays[xnew].y-rect.y+(rect.h)/2)<10) {
@@ -338,11 +296,6 @@ export default {
             rect.y = this.allArrays[xnew].y+(rect.h)/2
             this.lineActiveTop = true
             this.linePosTop = this.allArrays[xnew].y
-            break
-        }
-        else{
-          this.pt = 0
-          this.lineActiveTop = false
         }
         // Top the element - Top of the drag
         if(Math.abs(this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y+(rect.h)/2)<10) {
@@ -350,11 +303,6 @@ export default {
             rect.y = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2+(rect.h)/2
             this.lineActiveTop = true
             this.linePosTop = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2
-            break
-        }
-        else{
-          this.pt = 0
-          this.lineActiveTop = false
         }
         // Center of the element  - Center of the Drag From Top Bottom
         if(Math.abs(rect.y-this.allArrays[xnew].y)<5 && this.pt == 0) {
@@ -362,11 +310,6 @@ export default {
             rect.y=this.allArrays[xnew].y
             this.lineActiveTop= true
             this.linePosTop = this.allArrays[xnew].y
-            break
-        }
-        else{
-          this.pt = 0
-          this.lineActiveTop = false
         }
         // Top of the element - Bottom of the drag
         if(Math.abs(this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2)<10) {
@@ -374,11 +317,6 @@ export default {
             rect.y = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-(rect.h)/2
             this.lineActiveBottom = true
             this.linePosBottom = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2
-            break
-        }
-        else{
-          this.pb = 0
-          this.lineActiveBottom = false
         }
         // Middle of the element - Bottom of the drag
         if(Math.abs(this.allArrays[xnew].y-rect.y-(rect.h)/2)<10) {
@@ -386,11 +324,6 @@ export default {
             rect.y = this.allArrays[xnew].y-(rect.h)/2
             this.lineActiveBottom = true
             this.linePosBottom = this.allArrays[xnew].y
-            break
-        }
-        else{
-          this.pb = 0
-          this.lineActiveBottom= false
         }
         // Bottom of the element - Bottom of the drag
         if(Math.abs(this.allArrays[xnew].y+(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2)<10) {
@@ -398,16 +331,11 @@ export default {
             rect.y = this.allArrays[xnew].y+(this.allArrays[xnew].h)/2-(rect.h)/2
             this.lineActiveBottom = true
             this.linePosBottom = this.allArrays[xnew].y+(this.allArrays[xnew].h)/2
-            break
-        }
-        else{
-          this.pb = 0
-          this.lineActiveBottom= false
         }
       }
       // Hozirgi drag elementni dannilarini App.vue ga yuboriw
       this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle)
-      this.allArrays= []
+      this.allArrays = []
     },
   }
 }
