@@ -45,6 +45,13 @@
 <script>
 
 export default {
+  beforeMount() {
+    this.width = this.currItem.w
+    this.height = this.currItem.h
+    this.x = this.currItem.x
+    this.y = this.currItem.y
+    this.angle = this.currItem.angle
+  },
   mounted() {
     this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle)
     document.addEventListener('keydown', (e) => {
@@ -54,6 +61,8 @@ export default {
         this.moveFunc(e)
       }
     })
+
+    
   },
 
   props: ['imgSrc','coText','kal','coImg'],
@@ -77,6 +86,12 @@ export default {
 
     bottomRight() {
       return this.y + (this.height / 2) 
+    },
+    currItem(){
+      return this.imgSrc ? 
+        (this.coImg[this.kal] ? this.coImg[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
+         : 
+        (this.coText[this.kal] ? this.coText[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
     }
   },
 
@@ -227,6 +242,7 @@ export default {
           angle: this.coImg[xnew].angle
         })
       }
+      
 
       for(let xnew in this.allArrays) {
 

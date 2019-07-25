@@ -63,13 +63,11 @@
                         <div class="printingBody" ref="printMe">
                             <div key="text-drr">
                                 <dr v-for="(value2, k) in inputsArr.img" :key="k" 
-                                 
                                  :imgSrc="value2" 
                                 @coordinate="coorStickImg" :coImg="coorImg" :coText="coorText" :kal="k" ></dr>
                             </div>                            
                             <div key="image-drr">
                                 <dr v-for="(value1, ke) in inputsArr.text" :key="ke" 
-                                
                                 @coordinate="coorStickText" :coText="coorText" :coImg="coorImg"  :kal="ke">text</dr>
                             </div>
                             
@@ -144,23 +142,27 @@ import basicsTab from './components/basics'
 import templatesTab from './components/templates'
 export default {
   name: 'app',
-  watch: {
-      baza() {
-          localStorage.setItem('template', JSON.stringify(this.baza))
-      },
+//   watch: {
+//       baza() {
+//           localStorage.setItem('template', JSON.stringify(this.baza))
+//           console.log("baza ozgardi")
+//       },
 
-      inputsArr() {
-          localStorage.setItem('template', JSON.stringify(this.inputsArr))
-      },
+//       inputsArr() {
+//           localStorage.setItem('template', JSON.stringify(this.inputsArr))
+//           console.log("inputsArr ozgardi")
+//       },
 
-      coorText() {
-          localStorage.setItem('template', JSON.stringify(this.coorText))
-      },
+//       coorText() {
+//           localStorage.setItem('template', JSON.stringify(this.coorText))
+//           console.log("coortext ozgardi")
+//       },
 
-      coorImg() {
-          localStorage.setItem('template', JSON.stringify(this.coorImg))
-      }
-  },
+//       coorImg() {
+//           localStorage.setItem('template', JSON.stringify(this.coorImg))
+//           console.log("coorImg ozgardi")
+//       }
+//   },
   mounted() {
       if (this.activeElemType) {
           console.log(this.activeElemType)
@@ -397,13 +399,22 @@ methods: {
     pushElement(value, type){
         this.inputsArr[type].push(value)
     },
+    updateLocalStorage(){
+        console.log('updating coordinates arrays')
+        localStorage.setItem('template', JSON.stringify(this.baza))
+        localStorage.setItem('inputsArr', JSON.stringify(this.inputsArr))
+        localStorage.setItem('coorText', JSON.stringify(this.coorText))
+        localStorage.setItem('coorImg', JSON.stringify(this.coorImg))
+    },
 
     coorStickText(x,y,k,w,h,angle){
         this.coorText[k]={x:x,y:y,w:w,h:h,angle:angle}
+        this.updateLocalStorage()
     },
 
     coorStickImg(x,y,k,w,h,angle){
         this.coorImg[k]={x:x,y:y,w:w,h:h,angle:angle}
+        this.updateLocalStorage()
     }
 },
 
