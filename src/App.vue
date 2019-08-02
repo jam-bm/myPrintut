@@ -63,12 +63,12 @@
                         <div class="printingBody" ref="printMe">
                             <div key="text-drr">
                                 <dr v-for="(value2, k) in inputsArr.img" :key="k" 
-                                 :imgSrc="value2" 
-                                @coordinate="coorStickImg" :coImg="coorImg" :coText="coorText" :kal="k" ></dr>
+                                 :imgSrc="value2.src" 
+                                @coordinate="coorStickImg" :coImg="inputsArr.img" :coText="inputsArr.text" :kal="k" ></dr>
                             </div>                            
                             <div key="image-drr">
                                 <dr v-for="(value1, ke) in inputsArr.text" :key="ke" 
-                                @coordinate="coorStickText" :coText="coorText" :coImg="coorImg"  :kal="ke">text</dr>
+                                @coordinate="coorStickText" :coText="inputsArr.text" :coImg="inputsArr.img"  :kal="ke">text</dr>
                             </div>
                             
                         </div>
@@ -88,7 +88,7 @@
     <div class="side-ctn">
         <div :class="['aside-block', {active: isActive}]"  >
             <div class="aside-active-tab-cnt">
-                <component :is="selectedComponent" @addText="pushElement" :lalala="output"></component>
+                <component :is="selectedComponent" @addText="pushElement" :lalala="output" @newTemp="newTmplt"></component>
             </div>
           
 
@@ -164,56 +164,12 @@ export default {
 //       }
 //   },
   mounted() {
-      if (this.activeElemType) {
-          console.log(this.activeElemType)
-        if(this.activeElemType=='img') {
-            window.addEventListener('keydown', (e) => {
-                console.log(e.key)
-                if (e.key == 'ArrowUp') {
-                    this.coorImg[this.activeElemArrIndex].y -= 1
-                    e.preventDefault()
-                }
-                else if (e.key == 'ArrowDown'){
-                    this.coorImg[this.activeElemArrIndex].y += 1
-                    e.preventDefault()
-                }
-                else if (e.key == 'ArrowRight'){
-                    this.coorImg[this.activeElemArrIndex].x += 1
-                    e.preventDefault()
-                }
-                else if (e.key == 'ArrowLeft') {
-                    this.coorImg[this.activeElemArrIndex].x -= 1
-                    e.preventDefault()
-                }
-            });
-        } else {
-            window.addEventListener('keydown', (e) => {
-                console.log(e.key)
-                if (e.key == 'ArrowUp') {
-                    this.coorText[this.activeElemArrIndex].y -= 1
-                    e.preventDefault()
-                }
-                else if (e.key == 'ArrowDown'){
-                    this.coorText[this.activeElemArrIndex].y += 1
-                    e.preventDefault()
-                }
-                else if (e.key == 'ArrowRight'){
-                    this.coorText[this.activeElemArrIndex].x += 1
-                    e.preventDefault()
-                }
-                else if (e.key == 'ArrowLeft') {
-                    this.coorText[this.activeElemArrIndex].x -= 1
-                    e.preventDefault()
-                }
-            });
-        }
-          
-      }
       
       let lastTemplate = localStorage.getItem('template')
       let inputsArr = localStorage.getItem('inputsArr')
-      let coorText = localStorage.getItem('coorText')
-      let coorImg = localStorage.getItem('coorImg')
+      let output = localStorage.getItem('output')
+    //   let coorText = localStorage.getItem('coorText')
+    //   let coorImg = localStorage.getItem('coorImg')
 
       if(lastTemplate){
           this.baza = JSON.parse(lastTemplate)
@@ -223,13 +179,16 @@ export default {
           this.inputsArr = JSON.parse(inputsArr)
       }
 
-      if(coorText){
-          this.coorText = JSON.parse(coorText)
+      if(output){
+          this.output = output
       }
+    //   if(coorText){
+    //       this.coorText = JSON.parse(coorText)
+    //   }
 
-      if(coorImg){
-          this.coorImg = JSON.parse(coorImg)
-      }
+    //   if(coorImg){
+    //       this.coorImg = JSON.parse(coorImg)
+    //   }
   },
   data(){
       return {
@@ -343,14 +302,13 @@ methods: {
             }
 
             this.baza.template.text.push({
-                src: this.inputsArr.text[item],
-                x: this.coorText[item].x,
-                y: this.coorText[item].y,
-                w: this.coorText[item].w,
-                h: this.coorText[item].h,
-                angle: this.coorText[item].angle
+                src: this.inputsArr.text[item].src,
+                x: this.inputsArr.text[item].x,
+                y: this.inputsArr.text[item].y,
+                w: this.inputsArr.text[item].w,
+                h: this.inputsArr.text[item].h,
+                angle: this.inputsArr.text[item].angle
             })
-            console.log("text "+item)
         }
         for (let item=0; item < this.inputsArr.img.length; item++) {
             if(!this.baza.template) {
@@ -362,14 +320,13 @@ methods: {
             }
 
             this.baza.template.img.push({
-                src: this.inputsArr.img[item],
-                x: this.coorImg[item].x,
-                y: this.coorImg[item].y,
-                w: this.coorImg[item].w,
-                h: this.coorImg[item].h,
-                angle: this.coorImg[item].angle
+                src: this.inputsArr.img[item].src,
+                x: this.inputsArr.img[item].x,
+                y: this.inputsArr.img[item].y,
+                w: this.inputsArr.img[item].w,
+                h: this.inputsArr.img[item].h,
+                angle: this.inputsArr.img[item].angle
             })
-            console.log("img "+item)
         }
         
 
@@ -384,6 +341,14 @@ methods: {
         link.download= "filename.jpg"
         document.body.appendChild(link)
         link.click()
+        console.log(outputlocal)
+        localStorage.setItem('output', this.output)
+
+        if(!this.baza.template.src) {
+            this.$set(this.baza.template, 'src', [])
+        }
+
+        this.baza.template.src = outputlocal
     },
 
     toggleAside(){
@@ -397,24 +362,46 @@ methods: {
     },
 
     pushElement(value, type){
-        this.inputsArr[type].push(value)
+        this.inputsArr[type].push({src:value})
+        this.updateLocalStorage()
     },
     updateLocalStorage(){
         console.log('updating coordinates arrays')
         localStorage.setItem('template', JSON.stringify(this.baza))
         localStorage.setItem('inputsArr', JSON.stringify(this.inputsArr))
-        localStorage.setItem('coorText', JSON.stringify(this.coorText))
-        localStorage.setItem('coorImg', JSON.stringify(this.coorImg))
+        // localStorage.setItem('coorText', JSON.stringify(this.coorText))
+        // localStorage.setItem('coorImg', JSON.stringify(this.coorImg))
     },
 
-    coorStickText(x,y,k,w,h,angle){
-        this.coorText[k]={x:x,y:y,w:w,h:h,angle:angle}
+    coorStickText(x,y,k,w,h,angle,src){
+        this.inputsArr.text[k]={x:x,y:y,w:w,h:h,angle:angle,src:src}
         this.updateLocalStorage()
     },
 
-    coorStickImg(x,y,k,w,h,angle){
-        this.coorImg[k]={x:x,y:y,w:w,h:h,angle:angle}
+    coorStickImg(x,y,k,w,h,angle,src){
+        this.inputsArr.img[k]={x:x,y:y,w:w,h:h,angle:angle,src:src}
         this.updateLocalStorage()
+    },
+
+    newTmplt(tempImgSrc) {
+        console.log(1)
+        this.inputsArr.img = []
+        this.inputsArr.text = []
+        for(let item in this.baza) {
+            console.log(2)
+            if(this.baza[item].src == tempImgSrc) {
+                if(!this.baza[item].text) {
+                    this.$set(this.baza[item], 'text', [])
+                }
+                if(!this.baza[item].img) {
+                    this.$set(this.baza[item], 'img', [])
+                }
+                this.inputsArr = this.baza[item]
+                this.updateLocalStorage()
+                alert(this.inputsArr.text)
+                location.reload()
+            }
+        }
     }
 },
 

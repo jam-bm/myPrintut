@@ -1,6 +1,6 @@
 <template>
     <div>
-        <button>
+        <button @click="template">
             <img :src="lalala" alt="">
         </button>
     </div>
@@ -9,7 +9,11 @@
 <script>
 export default {
     props: ['lalala'],
-    
+    methods: {
+        template() {
+            this.$emit('newTemp', this.lalala)
+        }
+    },
 }
 </script>
 
