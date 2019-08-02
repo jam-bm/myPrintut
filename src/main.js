@@ -23,6 +23,8 @@ Vue.component('dr', dr)
 
 Vue.config.productionTip = false
 
+Vue.prototype.backColor = 'white'
+
 new Vue({
   render: h => h(App),
 }).$mount('#app')

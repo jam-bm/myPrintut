@@ -60,7 +60,7 @@
                         <!-- <textInput v-for="(value1, ke) in inputsArr.text" ></textInput>
                         <imgInput v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></imgInput> -->
                         
-                        <div class="printingBody" ref="printMe">
+                        <div class="printingBody" ref="printMe" :style="{backgroundColor: backColor}">
                             <div key="text-drr">
                                 <dr v-for="(value2, k) in inputsArr.img" :key="k" 
                                  :imgSrc="value2.src" 
@@ -88,7 +88,7 @@
     <div class="side-ctn">
         <div :class="['aside-block', {active: isActive}]"  >
             <div class="aside-active-tab-cnt">
-                <component :is="selectedComponent" @addText="pushElement" :lalala="output" @newTemp="newTmplt"></component>
+                <component :is="selectedComponent" @addText="pushElement" :lalala="output" @newTemp="newTmplt" ></component>
             </div>
           
 
@@ -306,7 +306,7 @@ export default {
                     {}
                 ]
             }
-        }
+        },
       }
   },
     
@@ -457,7 +457,7 @@ methods: {
                 
             }
         }
-    }
+    },
 },
 
 }

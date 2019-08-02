@@ -12,16 +12,19 @@ import pen from './font-bar/pen'
 export default {
     data() {
         return {
-            selectedComponent: 'lal',
+            selectedComponent: 'pen',
             components: [
                 'pen', 'pc', 'lib', 'ptrn'
             ],
         }
     },
+    components: {
+        pen
+    },
     methods: {
         activeFont(item) {
             this.selectedComponent = item
-        }
+        },
     },
 }
 </script>

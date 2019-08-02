@@ -1,6 +1,6 @@
 <template>
-    <div class="p-2">
-        <button v-for="item in colors" :style="[{backgroundColor: item}, 'width : 30px', 'height : 30px']"></button>
+    <div class="row p-4">
+        <button v-for="item in colors" :key="item" :style="[{background: item}]" class="color-btn col-1" @click="backColor = item"></button>
     </div>
 </template>
 
@@ -28,4 +28,8 @@ export default {
 </script>
 
 <style>
+.color-btn {
+    margin: 5px;
+    height: 30px;
+}
 </style>
