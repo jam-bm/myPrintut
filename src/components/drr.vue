@@ -85,9 +85,9 @@ export default {
     },
     currItem(){
       return this.imgSrc ? 
-        (this.coImg[this.kal].w ? this.coImg[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
+        (this.coImg[this.kal] && this.coImg[this.kal].w  ? this.coImg[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
          : 
-        (this.coText[this.kal].w ? this.coText[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
+        (this.coImg[this.kal] && this.coText[this.kal].w ? this.coText[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
     }
   },
 

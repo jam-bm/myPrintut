@@ -78,7 +78,7 @@
 
                 <div class="constructor_continue">
                     <div class="continue_button" >
-                        <a type="button" @click="print">Продолжить</a>
+                        <a type="#" @click="print">Продолжить</a>
                     </div>
                 </div>
             </div>
@@ -182,13 +182,57 @@ export default {
       if(output){
           this.output = output
       }
-    //   if(coorText){
-    //       this.coorText = JSON.parse(coorText)
-    //   }
 
-    //   if(coorImg){
-    //       this.coorImg = JSON.parse(coorImg)
-    //   }
+      for (let item=0; item < this.inputsArr.text.length; item++) {
+            if(!this.baza.template) {
+                this.$set(this.baza, 'template', {})
+            }
+
+            if(!this.baza.template.text) {
+                this.$set(this.baza.template, 'text', [])
+            }
+
+            if(item < this.baza.template.text.length) {
+                continue
+            }
+
+            this.baza.template.text.push({
+                src: this.inputsArr.text[item].src,
+                x: this.inputsArr.text[item].x,
+                y: this.inputsArr.text[item].y,
+                w: this.inputsArr.text[item].w,
+                h: this.inputsArr.text[item].h,
+                angle: this.inputsArr.text[item].angle
+            })
+        }
+        for (let item=0; item < this.inputsArr.img.length; item++) {
+            if(!this.baza.template) {
+                this.$set(this.baza, 'template', {})
+            }
+
+            if(!this.baza.template.img) {
+                this.$set(this.baza.template, 'img', [])
+            }
+
+            if(item < this.baza.template.img.length) {
+                continue
+            }
+
+            this.baza.template.img.push({
+                src: this.inputsArr.img[item].src,
+                x: this.inputsArr.img[item].x,
+                y: this.inputsArr.img[item].y,
+                w: this.inputsArr.img[item].w,
+                h: this.inputsArr.img[item].h,
+                angle: this.inputsArr.img[item].angle
+            })
+        }
+        if(!this.baza.template.src) {
+            this.$set(this.baza.template, 'src', [])
+        }
+
+        this.baza.template.src = this.output
+    //     this.updateLocalStorage()
   },
   data(){
       return {
@@ -293,12 +337,17 @@ methods: {
     async print() {
 
         for (let item=0; item < this.inputsArr.text.length; item++) {
+            
             if(!this.baza.template) {
                 this.$set(this.baza, 'template', {})
             }
 
             if(!this.baza.template.text) {
                 this.$set(this.baza.template, 'text', [])
+            }
+
+            if(item < this.baza.template.text.length) {
+                continue
             }
 
             this.baza.template.text.push({
@@ -318,6 +367,10 @@ methods: {
             if(!this.baza.template.img) {
                 this.$set(this.baza.template, 'img', [])
             }
+            
+            if(item < this.baza.template.img.length) {
+                continue
+            }
 
             this.baza.template.img.push({
                 src: this.inputsArr.img[item].src,
@@ -329,7 +382,6 @@ methods: {
             })
         }
         
-
         const el = this.$refs.printMe
         const options = {
             type: 'dataURL'
@@ -349,6 +401,8 @@ methods: {
         }
 
         this.baza.template.src = outputlocal
+        this.updateLocalStorage()
+
     },
 
     toggleAside(){
@@ -385,8 +439,8 @@ methods: {
 
     newTmplt(tempImgSrc) {
         console.log(1)
-        this.inputsArr.img = []
-        this.inputsArr.text = []
+        this.inputsArr = []
+        
         for(let item in this.baza) {
             console.log(2)
             if(this.baza[item].src == tempImgSrc) {
@@ -397,9 +451,10 @@ methods: {
                     this.$set(this.baza[item], 'img', [])
                 }
                 this.inputsArr = this.baza[item]
+                this.baza[item] = {}
                 this.updateLocalStorage()
-                alert(this.inputsArr.text)
                 location.reload()
+                
             }
         }
     }
@@ -425,5 +480,18 @@ methods: {
 }
 .continue_button{
     cursor: pointer;
+}
+.continue_button a{
+    width: 100%;
+    font-size: 20px;
+    background: transparent;
+    display: inline-block;
+    line-height: 38px;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #fff;
+    padding: 0 20px;
+    -webkit-transition: all .5s ease-out;
+    transition: all .5s ease-out;
 }
 </style>
