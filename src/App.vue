@@ -52,15 +52,8 @@
                         <div class="back__line"></div>
                         <div class="back__line"></div>
                     </div>
-
-
-                    <div class="square__border"></div>
-
                     <div id="paper" class="constructor__inner__border__cnt" >
-                        <!-- <textInput v-for="(value1, ke) in inputsArr.text" ></textInput>
-                        <imgInput v-for="(value2, k) in inputsArr.img"  :imgSrc="value2"></imgInput> -->
-                        
-                        <div class="printingBody" ref="printMe" :style="{backgroundColor: backColor}">
+                        <div class="printing-body" ref="printMe" :style="[{ 'background-image': `url(${$root.bgImg})`, 'background': `${$root.bColor}`,'background-repeat' : 'no-repeat', 'background-size': 'cover'}]">
                             <div key="text-drr">
                                 <dr v-for="(value2, k) in inputsArr.img" :key="k" 
                                  :imgSrc="value2.src" 
@@ -70,12 +63,9 @@
                                 <dr v-for="(value1, ke) in inputsArr.text" :key="ke" 
                                 @coordinate="coorStickText" :coText="inputsArr.text" :coImg="inputsArr.img"  :kal="ke">text</dr>
                             </div>
-                            
                         </div>
-                        
                     </div>
                 </div>
-
                 <div class="constructor_continue">
                     <div class="continue_button" >
                         <a type="#" @click="print">Продолжить</a>
@@ -142,27 +132,6 @@ import basicsTab from './components/basics'
 import templatesTab from './components/templates'
 export default {
   name: 'app',
-//   watch: {
-//       baza() {
-//           localStorage.setItem('template', JSON.stringify(this.baza))
-//           console.log("baza ozgardi")
-//       },
-
-//       inputsArr() {
-//           localStorage.setItem('template', JSON.stringify(this.inputsArr))
-//           console.log("inputsArr ozgardi")
-//       },
-
-//       coorText() {
-//           localStorage.setItem('template', JSON.stringify(this.coorText))
-//           console.log("coortext ozgardi")
-//       },
-
-//       coorImg() {
-//           localStorage.setItem('template', JSON.stringify(this.coorImg))
-//           console.log("coorImg ozgardi")
-//       }
-//   },
   mounted() {
       
       let lastTemplate = localStorage.getItem('template')
@@ -170,6 +139,8 @@ export default {
       let output = localStorage.getItem('output')
     //   let coorText = localStorage.getItem('coorText')
     //   let coorImg = localStorage.getItem('coorImg')
+    
+        
 
       if(lastTemplate){
           this.baza = JSON.parse(lastTemplate)
@@ -182,6 +153,12 @@ export default {
       if(output){
           this.output = output
       }
+
+    if(this.inputsArr.bColor)
+        {
+            this.$root.bColor = this.inputsArr.bColor
+            this.$root.bgImg = require(this.inputsArr.bgImg)
+        }
 
       for (let item=0; item < this.inputsArr.text.length; item++) {
             if(!this.baza.template) {
@@ -227,11 +204,24 @@ export default {
                 angle: this.inputsArr.img[item].angle
             })
         }
-        if(!this.baza.template.src) {
-            this.$set(this.baza.template, 'src', [])
+        if(this.baza.template && !this.baza.template.src) {
+            this.$set(this.baza.template, 'src', '')
+        }
+        
+        if(this.baza.template && !this.baza.template.bColor) {
+            this.$set(this.baza.template, 'bColor', '')
+        }
+        
+        if(this.baza.template && !this.baza.template.bgImg) {
+            this.$set(this.baza.template, 'bgImg', '')
+        }
+        
+        if(this.baza.template) {
+            this.baza.template.bgImg = this.inputsArr.bgImg
+            this.baza.template.src = this.output
+            this.baza.template.bColor = this.inputsArr.bColor
         }
 
-        this.baza.template.src = this.output
     //     this.updateLocalStorage()
   },
   data(){
@@ -307,6 +297,8 @@ export default {
                 ]
             }
         },
+
+        
       }
   },
     
@@ -387,22 +379,32 @@ methods: {
             type: 'dataURL'
         }
         let outputlocal = await this.$html2canvas(el, options)
+        console.log("1")
         this.output = outputlocal
         let link = document.createElement('a')
         link.href = outputlocal
         link.download= "filename.jpg"
         document.body.appendChild(link)
         link.click()
-        console.log(outputlocal)
+        console.log("1")
         localStorage.setItem('output', this.output)
 
         if(!this.baza.template.src) {
-            this.$set(this.baza.template, 'src', [])
+            this.$set(this.baza.template, 'src', '')
         }
+        this.baza.template.src =outputlocal
 
-        this.baza.template.src = outputlocal
+        if(!this.baza.template.bColor) {
+            this.$set(this.baza.template, 'bColor', '')
+        }
+        this.baza.template.bColor = this.$root.bColor
+
+        if(!this.baza.template.bgImg) {
+            this.$set(this.baza.template, 'bgImg', '')
+        }
+        this.baza.template.bgImg = this.$root.bgImg
+        
         this.updateLocalStorage()
-
     },
 
     toggleAside(){
@@ -459,6 +461,12 @@ methods: {
         }
     },
 },
+computed: {
+    giveBackColor() {
+        console.log(this.$backColor, 'asasas')
+        return this.$backColor
+    }
+},
 
 }
 </script>
@@ -472,11 +480,14 @@ methods: {
     width: 100%;
     position: absolute;
 }
-.printingBody {
-    width: 784px;
-    height: 484px;
-    margin-left: 8px;
-    margin-top: 8px;
+.printing-body {
+    position: absolute;
+    width: 800px;
+    height: 500px;
+    border: 8px solid #ccc;
+    background-attachment: fixed;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 .continue_button{
     cursor: pointer;

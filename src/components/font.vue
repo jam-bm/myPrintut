@@ -9,6 +9,7 @@
 
 <script>
 import pen from './font-bar/pen'
+import pc from './font-bar/pc'
 export default {
     data() {
         return {
@@ -19,7 +20,8 @@ export default {
         }
     },
     components: {
-        pen
+        pen,
+        pc
     },
     methods: {
         activeFont(item) {
