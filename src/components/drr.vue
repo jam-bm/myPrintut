@@ -20,9 +20,9 @@
         @resize="onDragResize"            
         >
 
-          <div class="dot-info ddr-center">
+          <!-- <div class="dot-info ddr-center">
             {{centerX}} , {{centerY}}
-          </div>
+          </div> -->
       
           <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
           <slot>

@@ -53,7 +53,7 @@
                         <div class="back__line"></div>
                     </div>
                     <div id="paper" class="constructor__inner__border__cnt" >
-                        <div class="printing-body" ref="printMe" :style="[{ 'background-image': `url(${$root.bgImg})`, 'background': `${$root.bColor}`,'background-repeat' : 'no-repeat', 'background-size': 'cover'}]">
+                        <div class="printing-body" ref="printMe" :style="[{ 'background': `${$root.bColor} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
                             <div key="text-drr">
                                 <dr v-for="(value2, k) in inputsArr.img" :key="k" 
                                  :imgSrc="value2.src" 
@@ -130,49 +130,45 @@ import QrCodeTab from './components/qrCode'
 import filesTab from './components/files'
 import basicsTab from './components/basics'
 import templatesTab from './components/templates'
+import _ from 'lodash'
 export default {
-  name: 'app',
-  mounted() {
-      
-      let lastTemplate = localStorage.getItem('template')
-      let inputsArr = localStorage.getItem('inputsArr')
-      let output = localStorage.getItem('output')
-    //   let coorText = localStorage.getItem('coorText')
-    //   let coorImg = localStorage.getItem('coorImg')
+    name: 'app',
+    mounted() {
     
-        
-
-      if(lastTemplate){
-          this.baza = JSON.parse(lastTemplate)
-      }
-
-      if(inputsArr){
-          this.inputsArr = JSON.parse(inputsArr)
-      }
-
-      if(output){
-          this.output = output
-      }
-
-    if(this.inputsArr.bColor)
-        {
-            this.$root.bColor = this.inputsArr.bColor
-            this.$root.bgImg = require(this.inputsArr.bgImg)
+        let lastTemplate = localStorage.getItem('template')
+        let inputsArr = localStorage.getItem('inputsArr')
+        let output = localStorage.getItem('output')
+        let bgImg = localStorage.getItem('bgImg')
+        let bColor = localStorage.getItem('bColor')
+        if(lastTemplate){
+            this.baza = JSON.parse(lastTemplate)
         }
-
-      for (let item=0; item < this.inputsArr.text.length; item++) {
+        if(inputsArr){
+            this.inputsArr = JSON.parse(inputsArr)
+        }
+        if(output){
+            this.output = output
+        }
+        if(this.inputsArr.bColor){
+            this.$root.bColor = this.inputsArr.bColor
+        } else if (bColor){
+            this.$root.bColor = bColor
+        }
+        if(this.inputsArr.bgImg){
+            this.$root.bgImg = this.inputsArr.bgImg
+        } else if (bgImg){
+            this.$root.bgImg = bgImg
+        }
+        for (let item=0; item < this.inputsArr.text.length; item++) {
             if(!this.baza.template) {
                 this.$set(this.baza, 'template', {})
             }
-
             if(!this.baza.template.text) {
                 this.$set(this.baza.template, 'text', [])
             }
-
             if(item < this.baza.template.text.length) {
                 continue
             }
-
             this.baza.template.text.push({
                 src: this.inputsArr.text[item].src,
                 x: this.inputsArr.text[item].x,
@@ -186,15 +182,12 @@ export default {
             if(!this.baza.template) {
                 this.$set(this.baza, 'template', {})
             }
-
             if(!this.baza.template.img) {
                 this.$set(this.baza.template, 'img', [])
             }
-
             if(item < this.baza.template.img.length) {
                 continue
             }
-
             this.baza.template.img.push({
                 src: this.inputsArr.img[item].src,
                 x: this.inputsArr.img[item].x,
@@ -207,100 +200,98 @@ export default {
         if(this.baza.template && !this.baza.template.src) {
             this.$set(this.baza.template, 'src', '')
         }
-        
+
         if(this.baza.template && !this.baza.template.bColor) {
             this.$set(this.baza.template, 'bColor', '')
         }
-        
+
         if(this.baza.template && !this.baza.template.bgImg) {
             this.$set(this.baza.template, 'bgImg', '')
         }
-        
+
         if(this.baza.template) {
             this.baza.template.bgImg = this.inputsArr.bgImg
             this.baza.template.src = this.output
             this.baza.template.bColor = this.inputsArr.bColor
         }
-
-    //     this.updateLocalStorage()
-  },
-  data(){
-      return {
-        isActive: false,
-        selectedComponent: '',
-        componentInput: '',
-        inputsArr: {
+    },
+    data(){
+        return {
+            isActive: false,
+            selectedComponent: '',
+            componentInput: '',
+            inputsArr: {
+                img: [],
+                text: [],
+            },
+            coorText: [],
+            coorImg: [],
+            xNum: 500,
+            yNum: 300,
             img: [],
-            text: [],
-        },
-        coorText: [],
-        coorImg: [],
-        xNum: 500,
-        yNum: 300,
-        img: [],
-        type:'',
-        output: null,
-        isActiveEl: {
-            img: false,
-            text: false
-        },
-        activeElemType: '',
-        activeElemArrIndex: 0,
-        asideTabs: [
-            {
-                name: 'search-tab', btnClass: 'search-btn', text: 'Search', icon: 'fa-search fa-2x'
+            type:'',
+            output: null,
+            isActiveEl: {
+                img: false,
+                text: false
             },
-            {
-                name: 'text-tab', btnClass: 'text-btn', text: 'textInput', icon: 'fa-text-height fa-2x'
-            },
-            {
-                name: 'images-tab', btnClass: 'images-btn', text: 'imgInput', icon: 'fa-images fa-2x'
-            },
-            {
-                name: 'elements-tab', btnClass: 'elements-btn', text: 'elements', icon: 'fa-shapes fa-2x'
-            },
-            {
-                name: 'font-tab', btnClass: 'Font-btn', text: 'Font', icon: 'fa-fill-drip fa-2x'
-            },
-            {
-                name: 'Qr-code-tab', btnClass: 'QrCode-btn', text: 'QR-Code', icon: 'fa-qrcode fa-2x'
-            },
-            {
-                name: 'files-tab', btnClass: 'Files-btn', text: 'Files', icon: 'fa-cloud-upload-alt fa-2x'
-            },
-           
-        ],
-        bottomTabs:[
-            {
-                name: 'basics-tab', btnClass: 'Basics-btn', text: 'Basics', icon: 'fa-paper-plane fa-2x'
-            },
-            {
-                name: 'templates-tab', btnClass: 'Templates-btn', text: 'Templates', icon: 'fa-pen-square fa-2x'
-            },
-        ],
+            activeElemType: '',
+            activeElemArrIndex: 0,
+            asideTabs: [
+                {
+                    name: 'search-tab', btnClass: 'search-btn', text: 'Search', icon: 'fa-search fa-2x'
+                },
+                {
+                    name: 'text-tab', btnClass: 'text-btn', text: 'textInput', icon: 'fa-text-height fa-2x'
+                },
+                {
+                    name: 'images-tab', btnClass: 'images-btn', text: 'imgInput', icon: 'fa-images fa-2x'
+                },
+                {
+                    name: 'elements-tab', btnClass: 'elements-btn', text: 'elements', icon: 'fa-shapes fa-2x'
+                },
+                {
+                    name: 'font-tab', btnClass: 'Font-btn', text: 'Font', icon: 'fa-fill-drip fa-2x'
+                },
+                {
+                    name: 'Qr-code-tab', btnClass: 'QrCode-btn', text: 'QR-Code', icon: 'fa-qrcode fa-2x'
+                },
+                {
+                    name: 'files-tab', btnClass: 'Files-btn', text: 'Files', icon: 'fa-cloud-upload-alt fa-2x'
+                },
+            
+            ],
+            bottomTabs:[
+                {
+                    name: 'basics-tab', btnClass: 'Basics-btn', text: 'Basics', icon: 'fa-paper-plane fa-2x'
+                },
+                {
+                    name: 'templates-tab', btnClass: 'Templates-btn', text: 'Templates', icon: 'fa-pen-square fa-2x'
+                },
+            ],
 
-        baza: {
-            default: {
-                text: [
-                    {src: '123', x: 0, y: 0, angle: 0, w: 0, h: 0}
-                ],  
-                img: [
-                    {src: '@/assets/dsd.jpg', x: 1, y: 24, angle: 0, w: 0, h: 0}
-                ]
+            baza: {
+                default: {
+                    text: [
+                        {src: '123', x: 0, y: 0, angle: 0, w: 0, h: 0}
+                    ],  
+                    img: [
+                        {src: '@/assets/dsd.jpg', x: 1, y: 24, angle: 0, w: 0, h: 0}
+                    ]
+                },
+                'qoraLayout': {
+                    text: [
+                        {}
+                    ],
+                    img: [
+                        {}
+                    ]
+                }
             },
-            'qoraLayout': {
-                text: [
-                    {}
-                ],
-                img: [
-                    {}
-                ]
-            }
-        },
 
-        
-      }
-  },
+            
+        }
+    },
     
 components: {
         textTab,
@@ -379,17 +370,17 @@ methods: {
             type: 'dataURL'
         }
         let outputlocal = await this.$html2canvas(el, options)
-        console.log("1")
+        
         this.output = outputlocal
         let link = document.createElement('a')
         link.href = outputlocal
         link.download= "filename.jpg"
         document.body.appendChild(link)
         link.click()
-        console.log("1")
+
         localStorage.setItem('output', this.output)
 
-        if(!this.baza.template.src) {
+        if(this.baza.template && !this.baza.template.src) {
             this.$set(this.baza.template, 'src', '')
         }
         this.baza.template.src =outputlocal
@@ -421,14 +412,13 @@ methods: {
         this.inputsArr[type].push({src:value})
         this.updateLocalStorage()
     },
-    updateLocalStorage(){
+    updateLocalStorage: _.debounce(function() {
         console.log('updating coordinates arrays')
+        this.inputsArr.bgImg = this.$root.bgImg
+        this.inputsArr.bColor = this.$root.bColor
         localStorage.setItem('template', JSON.stringify(this.baza))
         localStorage.setItem('inputsArr', JSON.stringify(this.inputsArr))
-        // localStorage.setItem('coorText', JSON.stringify(this.coorText))
-        // localStorage.setItem('coorImg', JSON.stringify(this.coorImg))
-    },
-
+    }, 600),
     coorStickText(x,y,k,w,h,angle,src){
         this.inputsArr.text[k]={x:x,y:y,w:w,h:h,angle:angle,src:src}
         this.updateLocalStorage()
@@ -485,9 +475,7 @@ computed: {
     width: 800px;
     height: 500px;
     border: 8px solid #ccc;
-    background-attachment: fixed;
-    background-size: cover;
-    background-repeat: no-repeat;
+    overflow: hidden;
 }
 .continue_button{
     cursor: pointer;

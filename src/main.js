@@ -5,7 +5,6 @@ import '@/assets/css/bootstrap.min.css'
 import VueDraggableResizable from 'vue-draggable-resizable'
 import drr from '@minogin/vue-drag-resize-rotate'
 import dr from '@/components/drr'
-import helper from '@/assets/js/helper'
 
 import VueHtml2Canvas from 'vue-html2canvas';
 
@@ -30,9 +29,11 @@ Vue.config.productionTip = false
 
 new Vue({
   data: () => ({
-    bColor: '#ffffff',
+    bColor: '#ffffff' ,
     bgImg: '',
-    inputImages: []
+    bgPcImages: [],
+    pcImages: [],
+    urlImg: []
   }),
   render: h => h(App),
 }).$mount('#app')
