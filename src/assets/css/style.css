@@ -348,7 +348,8 @@ html, body{
 .aside-active-tab-cnt {
 	flex: 1;
     margin-left: 70px;
-    padding: 10px 15px;
+	padding: 10px 15px;
+	overflow: auto;
 }
 
 
@@ -575,3 +576,6 @@ html, body{
 	right: -8px
 }
 
+img {
+	padding: 0 !important;
+}

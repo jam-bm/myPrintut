@@ -35,6 +35,8 @@ export default {
     methods: {
         setBgImg(item) {
             this.$root.bgImg = item
+            this.$root.bgPtrn = ''
+            localStorage.removeItem('bgPtrn')
             localStorage.setItem('bgImg', JSON.stringify(this.$root.bgImg))
         },
         fileUpload() {

@@ -33,18 +33,22 @@ export default {
     },
     methods: {
         callColor(item) {
-            console.log(this.$root.bColor)
-            this.$root.bColor = item
+            console.log(this.$root.bgColor)
+            this.$root.bgColor = item
             this.$root.bgImg = ''
-            localStorage.setItem('bColor', item)
-            localStorage.setItem('bgImg', '')
+            this.$root.bgPtrn = ''
+            localStorage.removeItem('bgPtrn')
+            localStorage.setItem('bgColor', item)
+            localStorage.removeItem('bgImg')
         },
         callPickerColor(item) {
-            console.log(this.$root.bColor)
-            this.$root.bColor = item.hex8
+            console.log(this.$root.bgColor)
+            this.$root.bgColor = item.hex8
             this.$root.bgImg = ''
-            localStorage.setItem('bColor', item.hex8)
-            localStorage.setItem('bgImg', '')
+            this.$root.bgPtrn = ''
+            localStorage.removeItem('bgPtrn')
+            localStorage.setItem('bgColor', item.hex8)
+            localStorage.removeItem('bgImg')
         }
     },
 }

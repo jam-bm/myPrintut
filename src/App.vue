@@ -53,15 +53,15 @@
                         <div class="back__line"></div>
                     </div>
                     <div id="paper" class="constructor__inner__border__cnt" >
-                        <div class="printing-body" ref="printMe" :style="[{ 'background': `${$root.bColor} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
-                            <div key="text-drr">
+                        <div class="printing-body" ref="printMe" :style="[{'background': $root.bgPtrn ? `url(${$root.bgPtrn}) repeat` : `${$root.bgColor} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
+                            <div key="image-drr">
                                 <dr v-for="(value2, k) in inputsArr.img" :key="k" 
-                                 :imgSrc="value2.src" 
+                                    :imgSrc="value2.src" 
                                 @coordinate="coorStickImg" :coImg="inputsArr.img" :coText="inputsArr.text" :kal="k" ></dr>
                             </div>                            
-                            <div key="image-drr">
+                            <div key="text-drr">
                                 <dr v-for="(value1, ke) in inputsArr.text" :key="ke" 
-                                @coordinate="coorStickText" :coText="inputsArr.text" :coImg="inputsArr.img"  :kal="ke">text</dr>
+                                @coordinate="coorStickText" :coText="inputsArr.text" :coImg="inputsArr.img"  :kal="ke" :edit="true">dd</dr>
                             </div>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
             <div class="aside-active-tab-cnt">
                 <component :is="selectedComponent" @addText="pushElement" :lalala="output" @newTemp="newTmplt" ></component>
             </div>
-          
+        
 
             <div class="left_border">
                 <button class="toggle-btn" @click="toggleAside">
@@ -96,8 +96,8 @@
                         <i :class="[`fas ${value.icon} `]"></i>
                         <br>
                         <span class="nav-text">
-                              {{value.text}}
-                         </span>
+                            {{value.text}}
+                        </span>
                     </button>
                 </li>
                 </ul>
@@ -139,7 +139,8 @@ export default {
         let inputsArr = localStorage.getItem('inputsArr')
         let output = localStorage.getItem('output')
         let bgImg = localStorage.getItem('bgImg')
-        let bColor = localStorage.getItem('bColor')
+        let bgColor = localStorage.getItem('bgColor')
+        let bgPtrn = localStorage.getItem('bgPtrn')
         if(lastTemplate){
             this.baza = JSON.parse(lastTemplate)
         }
@@ -149,15 +150,20 @@ export default {
         if(output){
             this.output = output
         }
-        if(this.inputsArr.bColor){
-            this.$root.bColor = this.inputsArr.bColor
-        } else if (bColor){
-            this.$root.bColor = bColor
+        if(this.inputsArr.bgColor){
+            this.$root.bgColor = this.inputsArr.bgColor
+        } else if (bgColor){
+            this.$root.bgColor = bgColor
         }
         if(this.inputsArr.bgImg){
             this.$root.bgImg = this.inputsArr.bgImg
         } else if (bgImg){
             this.$root.bgImg = bgImg
+        }
+        if(this.inputsArr.bgPtrn) {
+            this.$root.bgPtrn = this.inputsArr.bgPtrn
+        } else if(bgPtrn) {
+            this.$root.bgPtrn = bgPtrn
         }
         for (let item=0; item < this.inputsArr.text.length; item++) {
             if(!this.baza.template) {
@@ -201,8 +207,8 @@ export default {
             this.$set(this.baza.template, 'src', '')
         }
 
-        if(this.baza.template && !this.baza.template.bColor) {
-            this.$set(this.baza.template, 'bColor', '')
+        if(this.baza.template && !this.baza.template.bgColor) {
+            this.$set(this.baza.template, 'bgColor', '')
         }
 
         if(this.baza.template && !this.baza.template.bgImg) {
@@ -212,7 +218,7 @@ export default {
         if(this.baza.template) {
             this.baza.template.bgImg = this.inputsArr.bgImg
             this.baza.template.src = this.output
-            this.baza.template.bColor = this.inputsArr.bColor
+            this.baza.template.bgColor = this.inputsArr.bgColor
         }
     },
     data(){
@@ -385,15 +391,20 @@ methods: {
         }
         this.baza.template.src =outputlocal
 
-        if(!this.baza.template.bColor) {
-            this.$set(this.baza.template, 'bColor', '')
+        if(!this.baza.template.bgColor) {
+            this.$set(this.baza.template, 'bgColor', '')
         }
-        this.baza.template.bColor = this.$root.bColor
+        this.baza.template.bgColor = this.$root.bgColor
 
         if(!this.baza.template.bgImg) {
             this.$set(this.baza.template, 'bgImg', '')
         }
         this.baza.template.bgImg = this.$root.bgImg
+
+        if(!this.baza.template.bgPtrn) {
+            this.$set(this.baza.template, 'bgPtrn', '')
+        }
+        this.baza.template.bgPtrn = this.$root.bgPtrn
         
         this.updateLocalStorage()
     },
@@ -415,7 +426,8 @@ methods: {
     updateLocalStorage: _.debounce(function() {
         console.log('updating coordinates arrays')
         this.inputsArr.bgImg = this.$root.bgImg
-        this.inputsArr.bColor = this.$root.bColor
+        this.inputsArr.bgColor = this.$root.bgColor
+        this.inputsArr.bgPtrn = this.$root.bgPtrn
         localStorage.setItem('template', JSON.stringify(this.baza))
         localStorage.setItem('inputsArr', JSON.stringify(this.inputsArr))
     }, 600),

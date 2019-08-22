@@ -4,7 +4,7 @@
       ref="ddrContRef"
       >
       <drr
-        :style="{marginTop: (pt==0 ? pb : pt) + 'px' , marginLeft: (pl==0 ? pr : pl) + 'px' }"
+        :style="{'margin-top' : (pt==0 ? pb : pt) + 'px' , 'margin-left': (pl==0 ? pr : pl) + 'px', 'padding' : 0 + 'px'}"
         :x="x"
         :y="y"
         :w="width"
@@ -17,20 +17,18 @@
         @rotatestop="rotateStop"
         @change="onDragResize"
         @drag="onDragResize"
-        @resize="onDragResize"            
+        @resize="onDragResize"      
+        @dragstop="onDragStop"
         >
 
           <!-- <div class="dot-info ddr-center">
             {{centerX}} , {{centerY}}
           </div> -->
       
+          <!-- rotate info  -->
           <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
-          <slot>
-          </slot>
-
-          
-
-          <img :src="imgSrc" alt="" v-if="imgSrc">
+          <slot/>
+          <img :src="imgSrc" alt="" v-if="imgSrc" style="width: 100%; height: 100%; position: absolute">
       </drr>
       
       <span v-if="lineActiveTop"  class="hori" :style="{top: linePosTop + 'px'}"></span>
@@ -53,7 +51,11 @@ export default {
   mounted() {
     this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.imgSrc)
     document.addEventListener('keydown', (e) => {
-      if(this.$refs.ddrContRef.children[0].classList.contains('active')) {
+      if(
+      this.$refs.ddrContRef && 
+      this.$refs.ddrContRef.children && 
+      this.$refs.ddrContRef.children.length && 
+      this.$refs.ddrContRef.children[0].classList.contains('active')) {
         this.moveFunc(e)
       }
     })
@@ -61,7 +63,7 @@ export default {
     
   },
 
-  props: ['imgSrc','coText','kal','coImg'],
+  props: ['imgSrc','coText','kal','coImg', 'edit'],
   computed: {
     topLeft(){
       return this.x - (this.width / 2)
@@ -114,7 +116,12 @@ export default {
       linePosRight: 0,
       linePosLeft: 0,
       allArrays: [],
-      mouseUP: false
+      mouseUP: false,
+      leftSpace: 5,
+      snappedTop: 0,
+      snappedBtm: 0,
+      snappedRight: 0,
+      snappedLeft: 0
     }
   },
 
@@ -156,8 +163,18 @@ export default {
         this.test = true
       }, 500)
     },
+
+    onDragStop() {
+      _.debounce( function() {
+        console.log('onDragStop')
+        this.pl=0
+        this.pr=0
+        this.pt=0
+        this.pb=0
+      }, 600)
+    },
     
-    reSet(){
+    reSet: _.debounce(function() {
       let w = document.querySelectorAll('.drr')
       
       for(let i in w){
@@ -170,23 +187,21 @@ export default {
       if(this.$refs.ddrContRef.children[0]) {
           this.$refs.ddrContRef.children[0].className = 'drr active'
       }
-      setTimeout(() => {
-        // this.$refs.ddrContRef.children[0].classList.add('active')
-        // console.log("resewt")
-        this.pl = 0
-        this.pr = 0
-        this.pb = 0
-        this.pt = 0
-        this.lineActiveTop = false
-        this.lineActiveBottom = false
-        this.lineActiveRight = false
-        this.lineActiveLeft =false
-        this.mouseUP = true
-        // console.log('ddrContRef', this.$refs.ddrContRef.children[0].classList.remove('active'))
-      }, 500)
       
-    },
-
+      console.log('reSet init')
+      // this.$refs.ddrContRef.children[0].classList.add('active')
+      // console.log("resewt")
+      this.pl = 0
+      this.pr = 0
+      this.pb = 0
+      this.pt = 0
+      this.lineActiveTop = false
+      this.lineActiveBottom = false
+      this.lineActiveRight = false
+      this.lineActiveLeft =false
+      this.mouseUP = true
+            
+    }, 800),
     onDragResize(rect){
       this.x = rect.x
       this.y = rect.y
@@ -199,6 +214,8 @@ export default {
       this.lineActiveBottom = false
       this.lineActiveRight  = false
       this.lineActiveLeft   = false
+
+      this.snapped          = false
       
 
       this.width  = rect.w
@@ -217,7 +234,6 @@ export default {
           y: this.coText[xnew].y,
           w: this.coText[xnew].w,
           h: this.coText[xnew].h,
-          angle: this.coText[xnew].angle
         })
       }
       // Add imgText elements to allArrays 
@@ -231,7 +247,6 @@ export default {
           y: this.coImg[xnew].y,
           w: this.coImg[xnew].w,
           h: this.coImg[xnew].h,
-          angle: this.coImg[xnew].angle
         })
       }
       
@@ -239,7 +254,7 @@ export default {
       for(let xnew in this.allArrays) {
 
         // Right side of the element - Left side of the drag
-        if(Math.abs(this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x+(rect.w)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x+(rect.w)/2)<this.leftSpace && this.pl == 0) {
           // padding kengligini obektlar orasidagi masofaga qarab beriw
           this.pl = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x+(rect.w)/2
           rect.x  = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2+(rect.w)/2
@@ -250,14 +265,14 @@ export default {
           // For loopdan cqb ketiw
         }
         // Middle of the element - Left side of the drag
-        if(Math.abs(rect.x-(rect.w)/2-this.allArrays[xnew].x)<10 && this.pl == 0) {
+        if(Math.abs(rect.x-(rect.w)/2-this.allArrays[xnew].x)<this.leftSpace && this.pl == 0) {
           this.pl = this.allArrays[xnew].x-rect.x+(rect.w)/2
           rect.x=this.allArrays[xnew].x+(rect.w)/2
           this.lineActiveLeft= true
           this.linePosLeft = this.allArrays[xnew].x
         }
         // Left of the element - Left side of the drag
-        if(Math.abs(rect.x-(rect.w)/2-this.allArrays[xnew].x+(this.allArrays[xnew].w)/2)<5 && this.pl == 0) {
+        if(Math.abs(rect.x-(rect.w)/2-this.allArrays[xnew].x+(this.allArrays[xnew].w)/2)<this.leftSpace && this.pl == 0) {
           this.pl = this.allArrays[xnew].x-rect.x+(rect.w)/2-(this.allArrays[xnew].w)/2
           rect.x = this.allArrays[xnew].x+(rect.w)/2-(this.allArrays[xnew].w)/2
           this.lineActiveLeft= true
@@ -271,79 +286,88 @@ export default {
           this.linePosLeft = this.allArrays[xnew].x
         }
         // Left side of the element - Right side of the drag
-        if(Math.abs(this.allArrays[xnew].x-(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].x-(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2)<this.leftSpace  && this.pr == 0) {
           this.pr = this.allArrays[xnew].x-(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2
           rect.x = this.allArrays[xnew].x-(this.allArrays[xnew].w)/2-(rect.w)/2
           this.lineActiveRight = true
           this.linePosRight = this.allArrays[xnew].x-(this.allArrays[xnew].w)/2
         }
         // Middle of the element - Right side of the drag            
-        if(Math.abs(this.allArrays[xnew].x-rect.x-(rect.w)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].x-rect.x-(rect.w)/2)<5  && this.pr == 0) {
           this.pr = this.allArrays[xnew].x-rect.x-(rect.w)/2
           rect.x = this.allArrays[xnew].x-(rect.w)/2
           this.lineActiveRight = true
           this.linePosRight = this.allArrays[xnew].x
         }
         // Right of the element - Right side of the drag            
-        if(Math.abs(this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2)<this.leftSpace  && this.pr == 0) {
           this.pr = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-rect.x-(rect.w)/2
           rect.x = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2-(rect.w)/2
           this.lineActiveRight = true
           this.linePosRight = this.allArrays[xnew].x+(this.allArrays[xnew].w)/2
         }
         // Bottom of the element - Top of the drag
-        if(Math.abs((this.allArrays[xnew].h)/2+this.allArrays[xnew].y-rect.y+(rect.h)/2)<10) {
+        if(Math.abs((this.allArrays[xnew].h)/2+this.allArrays[xnew].y-rect.y+(rect.h)/2)<this.leftSpace  && this.pt == 0) {
           this.pt = (this.allArrays[xnew].h)/2+this.allArrays[xnew].y-rect.y+(rect.h)/2
           rect.y = (this.allArrays[xnew].h)/2+this.allArrays[xnew].y+(rect.h)/2
           this.lineActiveTop = true
           this.linePosTop = (this.allArrays[xnew].h)/2+this.allArrays[xnew].y
         }
         // Middle the element - Top of the drag
-        if(Math.abs(this.allArrays[xnew].y-rect.y+(rect.h)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].y-rect.y+(rect.h)/2)<this.leftSpace  && this.pt == 0) {
           this.pt = this.allArrays[xnew].y-rect.y+(rect.h)/2
           rect.y = this.allArrays[xnew].y+(rect.h)/2
           this.lineActiveTop = true
           this.linePosTop = this.allArrays[xnew].y
         }
         // Top the element - Top of the drag
-        if(Math.abs(this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y+(rect.h)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y+(rect.h)/2)<this.leftSpace  && this.pt == 0) {
           this.pt = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y+(rect.h)/2
           rect.y = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2+(rect.h)/2
           this.lineActiveTop = true
           this.linePosTop = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2
         }
         // Center of the element  - Center of the Drag From Top Bottom
-        if(Math.abs(rect.y-this.allArrays[xnew].y)<5 && this.pt == 0) {
+        if(Math.abs(rect.y-this.allArrays[xnew].y)<this.leftSpace && this.pt == 0) {
           this.pt = -(rect.y-this.allArrays[xnew].y)
           rect.y=this.allArrays[xnew].y
           this.lineActiveTop= true
           this.linePosTop = this.allArrays[xnew].y
         }
         // Top of the element - Bottom of the drag
-        if(Math.abs(this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2)<this.leftSpace  && this.pb == 0) {
           this.pb = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2
           rect.y = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2-(rect.h)/2
           this.lineActiveBottom = true
           this.linePosBottom = this.allArrays[xnew].y-(this.allArrays[xnew].h)/2
         }
         // Middle of the element - Bottom of the drag
-        if(Math.abs(this.allArrays[xnew].y-rect.y-(rect.h)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].y-rect.y-(rect.h)/2)<this.leftSpace  && this.pb == 0) {
           this.pb = this.allArrays[xnew].y-rect.y-(rect.h)/2
           rect.y = this.allArrays[xnew].y-(rect.h)/2
           this.lineActiveBottom = true
           this.linePosBottom = this.allArrays[xnew].y
         }
         // Bottom of the element - Bottom of the drag
-        if(Math.abs(this.allArrays[xnew].y+(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2)<10) {
+        if(Math.abs(this.allArrays[xnew].y+(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2)<this.leftSpace  && this.pb == 0) {
           this.pb = this.allArrays[xnew].y+(this.allArrays[xnew].h)/2-rect.y-(rect.h)/2
           rect.y = this.allArrays[xnew].y+(this.allArrays[xnew].h)/2-(rect.h)/2
           this.lineActiveBottom = true
           this.linePosBottom = this.allArrays[xnew].y+(this.allArrays[xnew].h)/2
         }
+
+        this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle, this.imgSrc)
+        
       }
-      // Hozirgi drag elementni dannilarini App.vue ga yuboriw
-      this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle, this.imgSrc)
+
       this.allArrays = []
+
+      // this.snapped = false
+      // Hozirgi drag elementni dannilarini App.vue ga yuboriw
+      
+        
+      // Agar 1 ta elementga yaqinlawsa 2cisiga yaqinlawmasligi ucun for loopdan ciqiw
+      
     },
   }
 }

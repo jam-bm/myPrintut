@@ -15,20 +15,22 @@ export default {
             images: [
                 require('@/assets/img/download.jpg'),
                 require('@/assets/img/images.jpg'),
-                require('@/assets/img/download(1).jpg')
+                require('@/assets/img/1.jpg')
             ]
         }
     },
     methods: {
         setBgImg(n) {
             this.$root.bgImg = n
+            this.$root.bgPtrn = ''
+            localStorage.removeItem('bgPtrn')
             localStorage.setItem('bgImg', JSON.stringify(this.$root.bgImg))
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
     img{
         padding: 2px;
         width: 100%;

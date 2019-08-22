@@ -44,12 +44,13 @@ export default {
         },
         deleteBtn(item) {
             this.$root.urlImg.splice(item, 1)
-        }
-    },
-    computed: {
+        },
         checkURL() {
             return(this.urlText.match(/\.(jpeg|jpg|gif|png)$/) != null);
         }
+    },
+    computed: {
+        
     },
 }
 </script>

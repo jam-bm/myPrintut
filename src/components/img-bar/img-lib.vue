@@ -15,7 +15,7 @@ export default {
             images: [
                 require('@/assets/img/download.jpg'),
                 require('@/assets/img/images.jpg'),
-                require('@/assets/img/download(1).jpg')
+                require('@/assets/img/1.jpg')
             ]
         }
     },
