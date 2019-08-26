@@ -26,16 +26,26 @@ Vue.component('dr', dr)
 
 
 Vue.config.productionTip = false
+Vue.config.strict = false
 
 
 new Vue({
   data: () => ({
-    bgColor: '#ffffff' ,
+    bgColor: '' ,
     bgImg: '',
     bgPcImages: [],
     pcImages: [],
     urlImg: [],
-    bgPtrn: ''
+    bgPtrn: '',
+    sequenceOfChange: [],
+    inputsArr: {
+      bgImg: '',
+      bgColor: '',
+      bgPtrn: '',
+      img: [],
+      text: [],
+    },
+    setterState: false,
   }),
   render: h => h(App),
 }).$mount('#app')

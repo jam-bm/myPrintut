@@ -33,22 +33,34 @@ export default {
     },
     methods: {
         callColor(item) {
-            console.log(this.$root.bgColor)
             this.$root.bgColor = item
             this.$root.bgImg = ''
             this.$root.bgPtrn = ''
+            this.$root.inputsArr.bgColor = item
+
+            localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
             localStorage.removeItem('bgPtrn')
             localStorage.setItem('bgColor', item)
             localStorage.removeItem('bgImg')
+
+            const clone = _.cloneDeep(this.$root.inputsArr)
+            // Har o'zgarishni arrayga qowiw
+            this.$root.sequenceOfChange.unshift(clone)
         },
         callPickerColor(item) {
-            console.log(this.$root.bgColor)
             this.$root.bgColor = item.hex8
             this.$root.bgImg = ''
             this.$root.bgPtrn = ''
+            this.$root.inputsArr.bgColor = item.hex8
+
+            localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
             localStorage.removeItem('bgPtrn')
             localStorage.setItem('bgColor', item.hex8)
             localStorage.removeItem('bgImg')
+
+            const clone = _.cloneDeep(this.$root.inputsArr)
+            // Har o'zgarishni arrayga qowiw
+            this.$root.sequenceOfChange.unshift(clone)
         }
     },
 }

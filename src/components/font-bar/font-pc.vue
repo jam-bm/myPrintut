@@ -36,8 +36,16 @@ export default {
         setBgImg(item) {
             this.$root.bgImg = item
             this.$root.bgPtrn = ''
+            this.$root.inputsArr.bgImg = item
+
+            localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
             localStorage.removeItem('bgPtrn')
             localStorage.setItem('bgImg', JSON.stringify(this.$root.bgImg))
+
+            const clone = _.cloneDeep(this.$root.inputsArr)
+            console.log('oldInputs before', clone)
+            // Har o'zgarishni arrayga qowiw
+            this.$root.sequenceOfChange.unshift(clone)
         },
         fileUpload() {
             this.$refs.refInput.click()

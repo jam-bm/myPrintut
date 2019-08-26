@@ -88,7 +88,7 @@ export default {
     currItem(){
       return this.imgSrc ? 
         (this.coImg[this.kal] && this.coImg[this.kal].w  ? this.coImg[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
-         : 
+        : 
         (this.coImg[this.kal] && this.coText[this.kal].w ? this.coText[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
     }
   },
@@ -171,6 +171,8 @@ export default {
         this.pr=0
         this.pt=0
         this.pb=0
+        
+        console.log('drag stop init')
       }, 600)
     },
     
@@ -187,8 +189,7 @@ export default {
       if(this.$refs.ddrContRef.children[0]) {
           this.$refs.ddrContRef.children[0].className = 'drr active'
       }
-      
-      console.log('reSet init')
+            
       // this.$refs.ddrContRef.children[0].classList.add('active')
       // console.log("resewt")
       this.pl = 0
@@ -200,8 +201,10 @@ export default {
       this.lineActiveRight = false
       this.lineActiveLeft =false
       this.mouseUP = true
-            
-    }, 800),
+      
+      
+      
+    }, 600),
     onDragResize(rect){
       this.x = rect.x
       this.y = rect.y
@@ -355,11 +358,9 @@ export default {
           this.lineActiveBottom = true
           this.linePosBottom = this.allArrays[xnew].y+(this.allArrays[xnew].h)/2
         }
-
-        this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle, this.imgSrc)
-        
       }
 
+      this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle, this.imgSrc)
       this.allArrays = []
 
       // this.snapped = false
@@ -369,6 +370,10 @@ export default {
       // Agar 1 ta elementga yaqinlawsa 2cisiga yaqinlawmasligi ucun for loopdan ciqiw
       
     },
+
+    // coordinateSetter() {
+    //   this.x = 
+    // }
   }
 }
 </script>
